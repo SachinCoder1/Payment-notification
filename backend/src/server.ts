@@ -9,6 +9,7 @@ dotenv.config();
 import CONNECT_MONGO_DB from "~/db";
 import { CLIENT_URL, DEFAULT_API_URL } from "~/config";
 import { PORT } from "./constants";
+import routes from "./routes";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.get("/", async (req, res) => {
   res.send("Hello World!");
 });
 
+app.use(`${DEFAULT_API_URL}/auth`, routes.auth);
 
 app.all("*", (req, res) => {
   res.status(404).send(`Accessing Invalid route ${req.originalUrl} `);
