@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import Merchant from "~/model/merchant";
 import Webhook from "~/model/webhook";
 
 export const signupWithEmail = async (req: Request, res: Response) => {
@@ -14,16 +15,7 @@ export const signupWithEmail = async (req: Request, res: Response) => {
 
 export const alchemyWebhooks = async (req: Request, res: Response) => {
   try {
-    // const { from, to, value, network } = req.body;
-
-    // console.log({
-    //   from,
-    //   to,
-    //   value,
-    //   network,
-    // });
-
-    const newWebhook = new Webhook({completeData: req.body});
+    const newWebhook = new Webhook({ completeData: req.body });
 
     await newWebhook.save();
 
@@ -42,6 +34,29 @@ export const test = async (req: Request, res: Response) => {
     return res.status(201).json({
       status: "success",
       message: "connected",
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "INTERNAL_ERROR" });
+  }
+};
+
+export const merchantOnboard = async (req: Request, res: Response) => {
+  try {
+    const { address, chain } = req.body;
+
+    let merchant = await Merchant.findOne({
+      address: address,
+    });
+
+    if (!merchant) {
+      merchant = new Merchant({ address, chain });
+      await merchant.save();
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Merchant onboarded successfully",
+      data: merchant,
     });
   } catch (error) {
     return res.status(500).json({ message: "INTERNAL_ERROR" });
