@@ -46,3 +46,15 @@ export const alchemyWebhooks = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "INTERNAL_ERROR" });
   }
 };
+export const test = async (req: Request, res: Response) => {
+  try {
+    console.log("api hit");
+
+    return res.status(201).json({
+      status: "success",
+      message: "connected",
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "INTERNAL_ERROR" });
+  }
+};
