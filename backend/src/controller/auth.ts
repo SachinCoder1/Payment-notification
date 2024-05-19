@@ -14,33 +14,22 @@ export const signupWithEmail = async (req: Request, res: Response) => {
 
 export const alchemyWebhooks = async (req: Request, res: Response) => {
   try {
-    const { from, to, value, network } = req.body;
+    // const { from, to, value, network } = req.body;
 
-    console.log({
-      from,
-      to,
-      value,
-      network,
-    });
+    // console.log({
+    //   from,
+    //   to,
+    //   value,
+    //   network,
+    // });
 
-    const newWebhook = new Webhook({
-      from,
-      to,
-      value,
-      network,
-    });
+    const newWebhook = new Webhook({completeData: req.body});
 
     await newWebhook.save();
 
     return res.status(201).json({
       status: "success",
       message: "connected",
-      data: {
-        from,
-        to,
-        value,
-        network,
-      },
     });
   } catch (error) {
     return res.status(500).json({ message: "INTERNAL_ERROR" });

@@ -13,6 +13,9 @@ const WebhookSchema = new mongoose.Schema({
   network: {
     type: String,
   },
+  completeData: {
+    type: Object
+  }
 });
 
 const Webhook = mongoose.model("Webhook", WebhookSchema);
