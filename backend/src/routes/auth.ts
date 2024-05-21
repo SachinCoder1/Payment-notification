@@ -2,7 +2,7 @@ import express from "express";
 
 import {
   alchemyWebhooks,
-  signupWithEmail,
+  authenticateUser,
   test,
   merchantOnboard,
 } from "~/controller/auth";
@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.get("/test", test);
-router.post("/signup-email", signupWithEmail);
+router.post("/authenticate", authenticateUser);
 router.post("/webhooks", alchemyWebhooks);
 router.post("/merchant", merchantOnboard);
 export default router;

@@ -1,14 +1,47 @@
 import { Request, Response } from "express";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "~/middleware/authentication";
 import Merchant from "~/model/merchant";
 import Webhook from "~/model/webhook";
 
-export const signupWithEmail = async (req: Request, res: Response) => {
+export const authenticateUser = async (req: Request, res: Response) => {
   try {
-    const { email, password, name } = req.body;
-    return res.status(201).json({
-      user: { email, password, name },
+    const { address, chain } = req.body;
+
+    const isMerchantExist: any = await Merchant.findOne({
+      address: address,
+    });
+
+    if (isMerchantExist) {
+      console.log("Merchant Exist");
+
+      res.status(200).send({
+        Status: "OK",
+        accessToken: isMerchantExist.accessToken,
+        message: "Existing Merchant",
+      });
+
+      return isMerchantExist;
+    }
+
+    const accessToken = generateAccessToken(address);
+    // const refreshToken = generateRefreshToken(address);
+
+    await Merchant.create({
+      address,
+      chain,
+      accessToken,
+    });
+    res.status(200).send({
+      Status: "OK",
+      accessToken,
+      message: "Merchant created",
     });
   } catch (error) {
+    console.log("error", error);
+
     return res.status(500).json({ message: "INTERNAL_ERROR" });
   }
 };

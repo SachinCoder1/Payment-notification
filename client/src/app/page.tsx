@@ -1,5 +1,5 @@
 import Image from "next/image";
-import RainbowMyCustom from "./components/rainbow-wallet";
+import RainbowMyCustom from "../components/ui/RainbowMyCustom";
 
 export default function Home() {
   return (

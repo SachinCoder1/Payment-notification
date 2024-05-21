@@ -5,6 +5,9 @@ const merchantSchema = new mongoose.Schema({
     type: String,
   },
   chain: {
+    type: Object,
+  },
+  accessToken: {
     type: String,
   },
 });
