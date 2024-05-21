@@ -1,15 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { authenticateMerchant } from "@/app/api";
+import { authenticateMerchant, onboardMerchant } from "@/app/api";
 import { signMessage } from "@wagmi/core";
 import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
 export default function RainbowMyCustom() {
   const { address, isConnected, isReconnecting, chain } = useAccount();
+
+  const [isOnboarded, setIsOnboarded] = useState(false);
 
   useEffect(() => {
     const callAuthentication = async () => {
@@ -36,6 +38,15 @@ export default function RainbowMyCustom() {
       });
 
       console.log("userSigning", userSigning);
+
+      if (userSigning) {
+        const response = await onboardMerchant(address);
+        console.log("response", response);
+
+        if (response?.isOnboarded) {
+          setIsOnboarded(true);
+        }
+      }
     }
   };
 
@@ -55,7 +66,7 @@ export default function RainbowMyCustom() {
     >
       <ConnectButton />
 
-      {address && (
+      {address && !isOnboarded && (
         <Button
           onClick={() => {
             makeUserSign();

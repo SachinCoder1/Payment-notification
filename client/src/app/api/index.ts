@@ -26,3 +26,24 @@ export const authenticateMerchant = async (address: any, chain: any) => {
     return { status: "fail", message: error.response.data };
   }
 };
+export const onboardMerchant = async (address: any) => {
+  // Send a signup request
+  console.log("calling api");
+
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/api/v1/auth/merchant`,
+      {
+        address,
+      }
+    );
+
+    console.log("response of onboardMerchant", response);
+
+    return response.data;
+  } catch (error: any) {
+    // Handle any errors
+
+    return { status: "fail", message: error.response.data };
+  }
+};

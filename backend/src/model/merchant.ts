@@ -10,6 +10,10 @@ const merchantSchema = new mongoose.Schema({
   accessToken: {
     type: String,
   },
+  isOnboarded: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Merchant = mongoose.model("Merchant", merchantSchema);

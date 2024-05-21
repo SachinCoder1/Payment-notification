@@ -1,10 +1,8 @@
-'use client'
+"use client";
 
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 // import "./globals.css";
-import '@rainbow-me/rainbowkit/styles.css';
-
+import "@rainbow-me/rainbowkit/styles.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
@@ -21,14 +19,7 @@ import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 const config = getDefaultConfig({
   appName: "RainbowKit App",
   projectId: "YOUR_PROJECT_ID",
-  chains: [
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    base,
-    sepolia,
-  ],
+  chains: [mainnet, polygon, optimism, arbitrum, base, sepolia],
   ssr: true,
 });
 

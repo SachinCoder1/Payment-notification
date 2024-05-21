@@ -77,23 +77,39 @@ export const test = async (req: Request, res: Response) => {
 
 export const merchantOnboard = async (req: Request, res: Response) => {
   try {
-    const { address, chain } = req.body;
+    const { address } = req.body;
 
     let merchant = await Merchant.findOne({
       address: address,
     });
 
     if (!merchant) {
-      merchant = new Merchant({ address, chain });
-      await merchant.save();
+      return res.status(200).json({
+        status: "error",
+        message: "Address not found",
+      });
     }
 
-   await addWalletAddressToAlchemy(address);
+    const isOnboarded: boolean = await addWalletAddressToAlchemy(address);
+
+    if (isOnboarded) {
+      await Merchant.findOneAndUpdate(
+        { address },
+        {
+          isOnboarded: true,
+        }
+      );
+
+      console.log("Merchant Onboard Status Updated");
+    }
 
     return res.status(200).json({
       status: "success",
-      message: "Merchant onboarded successfully",
+      message: isOnboarded
+        ? "Merchant onboarded successfully"
+        : "Check something got wrong",
       data: merchant,
+      isOnboarded: isOnboarded,
     });
   } catch (error) {
     return res.status(500).json({ message: "INTERNAL_ERROR" });
@@ -102,7 +118,9 @@ export const merchantOnboard = async (req: Request, res: Response) => {
 
 export const addWalletAddressToAlchemy = async (address: string) => {
   try {
-    const { data } = await axios.patch(
+    console.log("address", address);
+
+    const res = await axios.patch(
       "https://dashboard.alchemy.com/api/update-webhook-addresses",
       {
         addresses_to_add: [address],
@@ -115,8 +133,14 @@ export const addWalletAddressToAlchemy = async (address: string) => {
         },
       }
     );
-    console.log("data:", data);
-    return true;
+
+    const { data } = res;
+
+    if (Object.keys(data).length === 0) {
+      return true;
+    }
+
+    return false;
   } catch (error) {
     return false;
   }
