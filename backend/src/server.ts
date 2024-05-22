@@ -10,10 +10,14 @@ import CONNECT_MONGO_DB from "~/db";
 import { CLIENT_URL, DEFAULT_API_URL } from "~/config";
 import { PORT } from "./constants";
 import routes from "./routes";
-
+import { initializeSocket, io as socketIO } from "./service/socket";
+import { createServer } from "http";
 const app = express();
 
 CONNECT_MONGO_DB();
+
+const httpServer = createServer(app);
+initializeSocket(httpServer);
 
 app.use(express.json());
 app.use(compression());
@@ -23,6 +27,11 @@ app.use(
     origin: [CLIENT_URL],
   })
 );
+
+app.use(function (req: any, res: any, next: any) {
+  req.socketio = socketIO;
+  next();
+});
 
 app.get("/", async (req, res) => {
   res.send("Hello World!");
@@ -34,6 +43,18 @@ app.all("*", (req, res) => {
   res.status(404).send(`Accessing Invalid route ${req.originalUrl} `);
 });
 
-app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
-});
+const init = async () => {
+  try {
+    httpServer.listen(PORT, () => {
+      console.log(`App listening at http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.log(err);
+    console.log("Error while starting server");
+  }
+};
+
+/**
+ * Staring the app
+ */
+init();

@@ -5,7 +5,7 @@ const { DEVELOPMENT, TESTING, PRODUCTION } = ENV_TYPE;
 
 const config = {
   [DEVELOPMENT]: {
-    BASE_URL: "http://localhost:8080",
+    BASE_URL: "http://localhost:8000",
     CLIENT_URL: "http://localhost:3000",
   },
   [TESTING]: {

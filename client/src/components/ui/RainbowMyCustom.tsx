@@ -8,6 +8,7 @@ import { authenticateMerchant, onboardMerchant } from "@/app/api";
 import { signMessage } from "@wagmi/core";
 import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
+
 export default function RainbowMyCustom() {
   const { address, isConnected, isReconnecting, chain } = useAccount();
 
@@ -16,8 +17,6 @@ export default function RainbowMyCustom() {
   useEffect(() => {
     const callAuthentication = async () => {
       const accessTokenString = localStorage.getItem("accessToken");
-      console.log("accessTokenString", accessTokenString);
-
       if (accessTokenString) {
         return;
       } else {
