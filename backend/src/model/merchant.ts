@@ -14,6 +14,10 @@ const merchantSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  socketId: {
+    type: String,
+    default: null,
+  },
 });
 
 const Merchant = mongoose.model("Merchant", merchantSchema);

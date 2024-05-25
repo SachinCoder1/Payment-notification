@@ -29,7 +29,6 @@ export const authenticateUser = async (req: Request, res: Response) => {
     }
 
     const accessToken = generateAccessToken(address);
-    // const refreshToken = generateRefreshToken(address);
 
     await Merchant.create({
       address,
@@ -48,6 +47,20 @@ export const authenticateUser = async (req: Request, res: Response) => {
   }
 };
 
+export const verifyAccesstoken = async (accessToken: any) => {
+  try {
+    const isValid: any = await Merchant.findOne({ accessToken: accessToken });
+
+    if (isValid) {
+      return isValid;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log("while validating access token");
+  }
+};
+
 export const alchemyWebhooks = async (req: Request, res: Response) => {
   try {
     const newWebhook = new Webhook({ completeData: req.body });
@@ -62,13 +75,32 @@ export const alchemyWebhooks = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "INTERNAL_ERROR" });
   }
 };
-export const test = async (req: Request, res: Response) => {
+export const test = async (req: any, res: any) => {
   try {
-    console.log("api hit");
+    const io = req.socketio;
+    const existingMerchant = await Merchant.findById({
+      _id: "664cad66dbde7eea7e75ef88",
+    });
 
+    const socketId = existingMerchant?.socketId;
+
+    if (socketId && io) {
+      console.log("feed emitted on backend");
+
+      io.to(socketId).emit("general-feed-emitter", {
+        newTransaction: "tx-hash",
+      });
+
+      io.emit("without-socket-id", {
+        noSocket: true,
+      });
+    }
+
+    // io.to(socketId).emit('general-feed-emitter', newFeed);
     return res.status(201).json({
       status: "success",
       message: "connected",
+      data: existingMerchant,
     });
   } catch (error) {
     return res.status(500).json({ message: "INTERNAL_ERROR" });
