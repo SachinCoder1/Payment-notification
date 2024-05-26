@@ -61,11 +61,17 @@ export const verifyAccesstoken = async (accessToken: any) => {
   }
 };
 
-export const alchemyWebhooks = async (req: Request, res: Response) => {
+export const alchemyWebhooks = async (req: any, res: Response) => {
   try {
+    const io = req.socketio;
     const newWebhook = new Webhook({ completeData: req.body });
 
     await newWebhook.save();
+
+    io.emit("without-socket-id", {
+      noSocket: true,
+      myBody: req.body,
+    });
 
     return res.status(201).json({
       status: "success",
