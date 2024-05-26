@@ -13,12 +13,11 @@ export const authenticateMerchant = async (address: any, chain: any) => {
       }
     );
 
-    console.log("response", response);
-
     localStorage.setItem("accessToken", response.data.accessToken);
     return {
       status: "success",
       message: response.data.message,
+      data: response.data,
     };
   } catch (error: any) {
     // Handle any errors

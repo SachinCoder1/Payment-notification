@@ -23,6 +23,7 @@ export const authenticateUser = async (req: Request, res: Response) => {
         Status: "OK",
         accessToken: isMerchantExist.accessToken,
         message: "Existing Merchant",
+        isOnboarded: isMerchantExist.isOnboarded,
       });
 
       return isMerchantExist;
@@ -72,13 +73,13 @@ export const alchemyWebhooks = async (req: any, res: Response) => {
 
     await newWebhook.save();
 
-    console.log("socket emitting...")
+    console.log("socket emitting...");
     io.emit("without-socket-id", {
       noSocket: true,
       myBody: req.body,
     });
-    
-    console.log("socket emitted...")
+
+    console.log("socket emitted...");
     return res.status(201).json({
       status: "success",
       message: "connected",

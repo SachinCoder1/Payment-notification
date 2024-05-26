@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { authenticateMerchant, onboardMerchant, testSocket } from "@/app/api";
 import { signMessage } from "@wagmi/core";
+import { authenticateMerchant, onboardMerchant, testSocket } from "@/app/api";
 import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -19,12 +19,22 @@ export default function ConnectWallet() {
     const callAuthentication = async () => {
       const accessTokenString = localStorage.getItem("accessToken");
       if (!accessTokenString) {
-        const res = await authenticateMerchant(address, chain);
+        const res: any = await authenticateMerchant(address, chain);
         if (res.status === "success") {
           toast({
             title: "Authentication",
             description: "Authentication successful",
           });
+          if (res?.data?.isOnboarded) {
+            setIsOnboarded(true);
+            setTimeout(() => {
+              toast({
+                title: "Onboarding Status",
+                description: "You are all set to receive notifications",
+              });
+            }, 5000);
+          }
+
           initiateSocket();
         }
       }
@@ -37,6 +47,10 @@ export default function ConnectWallet() {
 
   useEffect(() => {
     if (isDisconnected) {
+      toast({
+        title: "Connection Status",
+        description: "You are disconnected",
+      });
       localStorage.removeItem("accessToken");
     }
   }, [isDisconnected]);
@@ -48,26 +62,22 @@ export default function ConnectWallet() {
         message: "Add Your Wallet to our tracker",
       });
 
-      console.log("userSigning", userSigning);
-
       if (userSigning) {
         const response = await onboardMerchant(address);
-        console.log("response", response);
 
         if (response?.isOnboarded) {
+          toast({
+            title: "Onboarding Status",
+            description: "You are all set to receive notifications",
+          });
           setIsOnboarded(true);
         }
       }
     }
   };
 
-  const testSocketHandler = async () => {
-    const response = await testSocket();
-    console.log("response of testSocket", response);
-  };
-
   return (
-    <div>
+    <div className="flex gap-2 items-center justify-center p-24">
       <ConnectButton />
 
       {address && !isOnboarded && (
@@ -80,17 +90,6 @@ export default function ConnectWallet() {
           Sign the message
         </Button>
       )}
-
-      <div>
-        <Button
-          onClick={() => {
-            testSocketHandler();
-          }}
-          className="normal-case flex justify-between pr-1"
-        >
-          socket connection call
-        </Button>
-      </div>
     </div>
   );
 }
