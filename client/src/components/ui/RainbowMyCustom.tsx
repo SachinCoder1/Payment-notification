@@ -8,7 +8,7 @@ import { signMessage } from "@wagmi/core";
 import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import MySocket from "./Mysocket";
+import MySocket from "./MySocket";
 
 export default function RainbowMyCustom() {
   const { address, isConnected, isReconnecting, chain, isDisconnected } =
