@@ -1,27 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useAccount } from "wagmi";
+import React, { useState, useEffect } from "react";
+import { useAccount, useDisconnect } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { authenticateMerchant, onboardMerchant } from "@/app/api";
 import { signMessage } from "@wagmi/core";
 import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import MySocket from "./Mysocket";
+
 export default function RainbowMyCustom() {
-  const { address, isConnected, isReconnecting, chain } = useAccount();
-
+  const { address, isConnected, isReconnecting, chain, isDisconnected } =
+    useAccount();
+  const { disconnect } = useDisconnect();
   const [isOnboarded, setIsOnboarded] = useState(false);
-
+  const { toast } = useToast();
   useEffect(() => {
     const callAuthentication = async () => {
       const accessTokenString = localStorage.getItem("accessToken");
-      console.log("accessTokenString", accessTokenString);
-
-      if (accessTokenString) {
-        return;
-      } else {
-        await authenticateMerchant(address, chain);
+      if (!accessTokenString) {
+        const res = await authenticateMerchant(address, chain);
+        if (res.status === "success") {
+          toast({
+            title: "Authentication",
+            description: "Authentication successful",
+          });
+        }
       }
     };
 
@@ -29,6 +34,12 @@ export default function RainbowMyCustom() {
       callAuthentication();
     }
   }, [isConnected, address, isReconnecting, chain]);
+
+  useEffect(() => {
+    if (isDisconnected) {
+      localStorage.removeItem("accessToken");
+    }
+  }, [isDisconnected]);
 
   const makeUserSign = async () => {
     if (address) {
@@ -64,6 +75,8 @@ export default function RainbowMyCustom() {
           Sign the message
         </Button>
       )}
+
+      {address && <MySocket />}
     </div>
   );
 }

@@ -15,7 +15,7 @@ import {
   sepolia,
 } from "wagmi/chains";
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-
+import { Toaster } from "@/components/ui/toaster";
 const config = getDefaultConfig({
   appName: "RainbowKit App",
   projectId: "YOUR_PROJECT_ID",
@@ -40,6 +40,7 @@ export default function RootLayout({
             <RainbowKitProvider>{children}</RainbowKitProvider>
           </QueryClientProvider>
         </WagmiProvider>
+        <Toaster />
       </body>
     </html>
   );

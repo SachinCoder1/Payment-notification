@@ -1,4 +1,3 @@
-import Image from "next/image";
 import RainbowMyCustom from "../components/ui/RainbowMyCustom";
 import TextToVoice from "@/components/ui/TextToVoice";
 
