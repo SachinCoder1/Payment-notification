@@ -39,6 +39,7 @@ export default function MySocket() {
       console.log("error: ", error);
     }
   };
+  
 
   return <button onClick={() => initiateSocket()}>connect to socket</button>;
 }
