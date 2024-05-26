@@ -1,5 +1,6 @@
 "use client";
 
+import { handleSpeak } from "@/services/textToVoice";
 import { useTransactionStore } from "@/store/store";
 import React from "react";
 import { useEffect } from "react";
