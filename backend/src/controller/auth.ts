@@ -79,7 +79,7 @@ export const test = async (req: any, res: any) => {
   try {
     const io = req.socketio;
     const existingMerchant = await Merchant.findById({
-      _id: "664cad66dbde7eea7e75ef88",
+      _id: "6652e437596cbc70a27aa084",
     });
 
     const socketId = existingMerchant?.socketId;
