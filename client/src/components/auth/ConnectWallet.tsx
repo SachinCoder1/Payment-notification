@@ -8,14 +8,11 @@ import { signMessage } from "@wagmi/core";
 import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import MySocket from "./MySocket";
 import { initiateSocket } from "@/services/socket";
-import { handleSpeak } from "@/services/textToVoice";
 
-export default function RainbowMyCustom() {
+export default function ConnectWallet() {
   const { address, isConnected, isReconnecting, chain, isDisconnected } =
     useAccount();
-  const { disconnect } = useDisconnect();
   const [isOnboarded, setIsOnboarded] = useState(false);
   const { toast } = useToast();
   useEffect(() => {
@@ -84,7 +81,6 @@ export default function RainbowMyCustom() {
         </Button>
       )}
 
-      {address && <MySocket />}
       <div>
         <Button
           onClick={() => {
