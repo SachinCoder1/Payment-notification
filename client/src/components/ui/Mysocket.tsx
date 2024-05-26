@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
 import React from "react";
 import { useEffect } from "react";
 import { io } from "socket.io-client";
-
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 export default function MySocket() {
   const initiateSocket = () => {
     try {
@@ -11,7 +11,7 @@ export default function MySocket() {
       console.log("accessTokenString", accessTokenString);
 
       if (accessTokenString) {
-        const socket = io("http://localhost:8000", {
+        const socket = io(BACKEND_API_BASE_URL || "", {
           query: {
             accessToken: accessTokenString,
           },

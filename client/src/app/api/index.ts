@@ -1,12 +1,12 @@
 import axios from "axios";
-// const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL;
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 export const authenticateMerchant = async (address: any, chain: any) => {
   // Send a signup request
   console.log("calling api");
 
   try {
     const response = await axios.post(
-      `http://localhost:8000/api/v1/auth/authenticate`,
+      `${BACKEND_API_BASE_URL}/api/v1/auth/authenticate`,
       {
         address,
         chain,
@@ -32,7 +32,7 @@ export const onboardMerchant = async (address: any) => {
 
   try {
     const response = await axios.post(
-      `http://localhost:8000/api/v1/auth/merchant`,
+      `${BACKEND_API_BASE_URL}/api/v1/auth/merchant`,
       {
         address,
       }
