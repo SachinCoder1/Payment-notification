@@ -12,10 +12,10 @@ interface Voice {
 
 const TextToVoice = ({
   text = "",
-  onClick,
+  // onClick,
 }: {
   text: string;
-  onClick: any;
+  // onClick: any;
 }) => {
   const transaction: any = useTransactionStore((state) => state.transaction);
   const [voices, setVoices] = useState<Voice[]>([]);
@@ -79,7 +79,7 @@ const TextToVoice = ({
           ))}
         </select> */}
       </div>
-      <button onClick={onClick}>Speak</button>
+      {/* <button onClick={onClick}>Speak</button> */}
     </div>
   );
 };

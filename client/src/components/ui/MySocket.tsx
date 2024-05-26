@@ -31,9 +31,18 @@ export default function MySocket() {
 
         socket.on("without-socket-id", (data: any) => {
           console.log("data", data);
+          const tx = data?.myBody?.event?.activity[0] || {};
 
           if (data) {
             setTransaction(data?.myBody?.event?.activity[0] || {});
+            const shortAddress = `${tx.fromAddress.slice(
+              0,
+              6
+            )}...${tx.fromAddress.slice(-4)}`;
+            const msg = `Received ${tx.value} ${tx.asset} from ${shortAddress}`;
+            console.log("msg:", msg)
+
+            handleSpeak(msg);
           }
         });
       }
@@ -41,6 +50,7 @@ export default function MySocket() {
       console.log("error: ", error);
     }
   };
+  
 
   return <button onClick={() => initiateSocket()}>connect to socket</button>;
 }

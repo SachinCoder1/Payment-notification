@@ -72,11 +72,13 @@ export const alchemyWebhooks = async (req: any, res: Response) => {
 
     await newWebhook.save();
 
+    console.log("socket emitting...")
     io.emit("without-socket-id", {
       noSocket: true,
       myBody: req.body,
     });
-
+    
+    console.log("socket emitted...")
     return res.status(201).json({
       status: "success",
       message: "connected",

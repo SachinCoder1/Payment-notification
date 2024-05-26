@@ -18,11 +18,12 @@ export default function Home() {
         }}
       >
         <RainbowMyCustom />
+        
         <TextToVoice
           text="Received 20 USDC from Vitalik"
-          onClick={() => {
-            console.log("text");
-          }}
+          // onClick={() => {
+          //   console.log("text");
+          // }}
         />
       </div>
     </main>

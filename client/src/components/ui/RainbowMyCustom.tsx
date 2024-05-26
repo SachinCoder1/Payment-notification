@@ -9,6 +9,8 @@ import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import MySocket from "./MySocket";
+import { initiateSocket } from "@/services/socket";
+import { handleSpeak } from "@/services/textToVoice";
 
 export default function RainbowMyCustom() {
   const { address, isConnected, isReconnecting, chain, isDisconnected } =
@@ -26,6 +28,7 @@ export default function RainbowMyCustom() {
             title: "Authentication",
             description: "Authentication successful",
           });
+          initiateSocket();
         }
       }
     };
