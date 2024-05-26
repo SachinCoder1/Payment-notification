@@ -88,29 +88,25 @@ export const alchemyWebhooks = async (req: any, res: Response) => {
 export const test = async (req: any, res: any) => {
   try {
     const io = req.socketio;
-    const existingMerchant = await Merchant.findById({
-      _id: "6652e437596cbc70a27aa084",
+    // const existingMerchant = await Merchant.findById({
+    //   _id: "6652e437596cbc70a27aa084",
+    // });
+    // const socketId = existingMerchant?.socketId;
+    // if (socketId && io) {
+    //   console.log("feed emitted on backend");
+    //   io.to(socketId).emit("general-feed-emitter", {
+    //     newTransaction: "tx-hash",
+    //   });
+    // }
+
+    io.emit("without-socket-id", {
+      isSocketConnected: true,
+      message: "socket connected test api hit",
     });
-
-    const socketId = existingMerchant?.socketId;
-
-    if (socketId && io) {
-      console.log("feed emitted on backend");
-
-      io.to(socketId).emit("general-feed-emitter", {
-        newTransaction: "tx-hash",
-      });
-
-      io.emit("without-socket-id", {
-        noSocket: true,
-      });
-    }
-
     // io.to(socketId).emit('general-feed-emitter', newFeed);
     return res.status(201).json({
       status: "success",
-      message: "connected",
-      data: existingMerchant,
+      message: "socket emitted to all connected users",
     });
   } catch (error) {
     return res.status(500).json({ message: "INTERNAL_ERROR" });

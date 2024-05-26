@@ -26,6 +26,17 @@ export const authenticateMerchant = async (address: any, chain: any) => {
     return { status: "fail", message: error.response.data };
   }
 };
+export const testSocket = async () => {
+  try {
+    const response = await axios.get(
+      `${BACKEND_API_BASE_URL}/api/v1/auth/test`
+    );
+
+    return response;
+  } catch (error: any) {
+    return { status: "fail", message: error.response.data };
+  }
+};
 export const onboardMerchant = async (address: any) => {
   // Send a signup request
   console.log("calling api");

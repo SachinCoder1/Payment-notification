@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { authenticateMerchant, onboardMerchant } from "@/app/api";
+import { authenticateMerchant, onboardMerchant, testSocket } from "@/app/api";
 import { signMessage } from "@wagmi/core";
 import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
@@ -61,6 +61,11 @@ export default function RainbowMyCustom() {
     }
   };
 
+  const testSocketHandler = async () => {
+    const response = await testSocket();
+    console.log("response of testSocket", response);
+  };
+
   return (
     <div>
       <ConnectButton />
@@ -77,6 +82,16 @@ export default function RainbowMyCustom() {
       )}
 
       {address && <MySocket />}
+      <div>
+        <Button
+          onClick={() => {
+            testSocketHandler();
+          }}
+          className="normal-case flex justify-between pr-1"
+        >
+          socket connection call
+        </Button>
+      </div>
     </div>
   );
 }
