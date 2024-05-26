@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import React from "react";
 import { useEffect } from "react";
@@ -20,6 +20,10 @@ export default function MySocket() {
 
         socket.on("connect", () => {
           console.log("Connected to the server");
+          //   toast({
+          //     title: "Connected to the server",
+          //     description: "socket connected successfully",
+          //   });
         });
 
         console.log("passed socket.on connect");
