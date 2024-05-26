@@ -26,7 +26,7 @@ export const initiateSocket = () => {
         const tx = data?.myBody?.event?.activity[0] || {};
 
         if (data) {
-        //   useTransactionStore().setTransaction(tx);
+          //   useTransactionStore().setTransaction(tx);
           const shortAddress = `${tx.fromAddress.slice(
             0,
             6
