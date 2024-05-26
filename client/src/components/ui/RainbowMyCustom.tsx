@@ -62,19 +62,7 @@ export default function RainbowMyCustom() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        boxShadow: "0px 3px 6px #00000029",
-        padding: "20px",
-        borderRadius: "10px",
-        gap: "1rem",
-      }}
-    >
+    <div>
       <ConnectButton />
 
       {address && !isOnboarded && (

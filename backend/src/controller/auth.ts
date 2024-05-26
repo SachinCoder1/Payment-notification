@@ -47,7 +47,15 @@ export const authenticateUser = async (req: Request, res: Response) => {
   }
 };
 
+<<<<<<< HEAD
 export const verifyAccesstoken = async (accessToken: any) => {
+=======
+
+// 1. Socket connection
+// 2. find the "to" wallet address in our merchant records
+// 3. if it is there then emit the socket event to frontend that received this payment
+export const alchemyWebhooks = async (req: Request, res: Response) => {
+>>>>>>> main
   try {
     const isValid: any = await Merchant.findOne({ accessToken: accessToken });
 
