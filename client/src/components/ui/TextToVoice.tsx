@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransactionStore } from "@/store/store";
 import React, { useState, useEffect } from "react";
 
 // Define types for voice and message
@@ -9,7 +10,14 @@ interface Voice {
   [key: string]: any; // To accommodate any other properties that might exist
 }
 
-const TextToVoice = ({ text = "" }: { text: string }) => {
+const TextToVoice = ({
+  text = "",
+  onClick,
+}: {
+  text: string;
+  onClick: any;
+}) => {
+  const transaction: any = useTransactionStore((state) => state.transaction);
   const [voices, setVoices] = useState<Voice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
 
@@ -38,10 +46,14 @@ const TextToVoice = ({ text = "" }: { text: string }) => {
             voices.find((voice) => voice.name === selectedVoice)
           );
           const message: any = new SpeechSynthesisUtterance();
-          message.text = text;
+          const shortAddress = `${transaction.fromAddress.slice(
+            0,
+            6
+          )}...${transaction.fromAddress.slice(-4)}`;
+          message.text = `Received ${transaction.value} ${transaction.asset} from ${shortAddress}`;
           if (selectedVoice) {
             message.voice =
-              voices.find((voice) => voice.name === (selectedVoice)) || null;
+              voices.find((voice) => voice.name === selectedVoice) || null;
           }
           window.speechSynthesis.speak(message);
         }, 1000);
@@ -67,7 +79,7 @@ const TextToVoice = ({ text = "" }: { text: string }) => {
           ))}
         </select> */}
       </div>
-      <button onClick={handleSpeak}>Speak</button>
+      <button onClick={onClick}>Speak</button>
     </div>
   );
 };
