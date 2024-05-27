@@ -36,6 +36,7 @@
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "mongoose": "^8.4.0",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "web3.storage": "^4.5.5"
   }
 }
