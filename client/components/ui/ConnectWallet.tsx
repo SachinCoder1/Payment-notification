@@ -9,8 +9,10 @@ import { config } from "@/app/config/config";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { initiateSocket } from "@/services/socket";
+import { useAnimation } from "@/context/AnimationContext";
 
 export default function ConnectWallet() {
+  const { toggleAnimation } = useAnimation();
   const { address, isConnected, isReconnecting, chain, isDisconnected } =
     useAccount();
   const [isOnboarded, setIsOnboarded] = useState(false);
@@ -35,7 +37,7 @@ export default function ConnectWallet() {
             }, 5000);
           }
 
-          initiateSocket();
+          initiateSocket(toggleAnimation);
         }
       }
     };

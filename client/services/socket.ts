@@ -1,11 +1,10 @@
-import { useTransactionStore } from "@/store/store";
 import { io } from "socket.io-client";
 import { handleSpeak } from "./textToVoice";
 let socket: any;
 const BACKEND_API_BASE_URL: string =
   process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
 
-export const initiateSocket = () => {
+export const initiateSocket = (toggleAnimation: (play: boolean) => void) => {
   try {
     const accessTokenString = localStorage.getItem("accessToken");
     console.log("accessTokenString", accessTokenString);
@@ -35,6 +34,8 @@ export const initiateSocket = () => {
           console.log("msg:", msg);
 
           handleSpeak(msg);
+          toggleAnimation(true);
+          setTimeout(() => toggleAnimation(false), 5000);
         }
       });
     }
