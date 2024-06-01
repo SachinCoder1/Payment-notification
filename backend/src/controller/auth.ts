@@ -7,6 +7,7 @@ import Merchant from "~/model/merchant";
 import Webhook from "~/model/webhook";
 import axios from "axios";
 import { ALCHEMY_WEBHOOK_ID, X_ALCHEMY_TOKEN } from "~/constants";
+import { getUserReceiveTransaction, getUserSentTransaction } from "~/service";
 
 export const authenticateUser = async (req: Request, res: Response) => {
   try {
@@ -113,6 +114,30 @@ export const test = async (req: any, res: any) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "INTERNAL_ERROR" });
+  }
+};
+export const getUserTransactionController = async (req: any, res: any) => {
+  try {
+    const address = req.body.address;
+
+    if (address) {
+      console.log("address", address);
+    } else {
+      return res.status(400).json({ message: "Address is required" });
+    }
+
+    const received: any = await getUserReceiveTransaction(address);
+    const sent: any = await getUserSentTransaction(address);
+    return res.status(201).json({
+      status: "success",
+      data: { received, sent },
+    });
+  } catch (error) {
+    console.log("error", error);
+
+    return res
+      .status(500)
+      .json({ message: "getUserReceiveTransactionController error" });
   }
 };
 
