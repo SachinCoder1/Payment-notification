@@ -239,15 +239,19 @@ export const addWalletAddressToAlchemy = async (address: string) => {
         },
       }
     );
+    console.log("res", res);
 
     const { data } = res;
 
     if (Object.keys(data).length === 0) {
+      console.log("Wallet Address Added to Alchemy");
       return true;
     }
 
     return false;
   } catch (error) {
+    console.log("error while addWalletAddressToAlchemy", error);
+
     return false;
   }
 };
