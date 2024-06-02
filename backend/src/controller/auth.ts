@@ -67,16 +67,42 @@ export const verifyAccesstoken = async (accessToken: any) => {
 // 2. find the "to" wallet address in our merchant records
 // 3. if it is there then emit the socket event to frontend that received this payment
 
+// io.emit("without-socket-id", {
+//   noSocket: true,
+//   myBody: req.body,
+// });
+
 export const alchemyWebhooks = async (req: any, res: Response) => {
   try {
     const io = req.socketio;
     const newWebhook = new Webhook({ completeData: req.body });
-
     await newWebhook.save();
 
     console.log("socket emitting...");
-    io.emit("without-socket-id", {
-      noSocket: true,
+
+    const { toAddress } = req.body.event.activity[0];
+
+    const existingMerchant = await Merchant.findOne({ address: toAddress });
+
+    if (!existingMerchant) {
+      return res.status(200).json({
+        status: "error",
+        message: "Merchant not found",
+      });
+    }
+
+    const socketId = existingMerchant.socketId;
+
+    console.log("socketId", socketId);
+
+    if (!socketId) {
+      return res.status(200).json({
+        status: "error",
+        message: "user is not connected to socket",
+      });
+    }
+
+    io.to(socketId).emit("user-specific-notification", {
       myBody: req.body,
     });
 

@@ -11,16 +11,16 @@ export const initiateSocket = (toggleAnimation: (play: boolean) => void) => {
 
     if (accessTokenString) {
       socket = io(BACKEND_API_BASE_URL, {
-        // query: {
-        //   accessToken: accessTokenString,
-        // },
+        query: {
+          accessToken: accessTokenString,
+        },
       });
 
       socket.on("connect", () => {
         console.log("Connected to the server");
       });
 
-      socket.on("without-socket-id", (data: any) => {
+      socket.on("user-specific-notification", (data: any) => {
         console.log("data", data);
         const tx = data?.myBody?.event?.activity[0] || {};
 
