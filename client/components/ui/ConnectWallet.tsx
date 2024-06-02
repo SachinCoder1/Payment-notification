@@ -49,10 +49,6 @@ export default function ConnectWallet() {
 
   useEffect(() => {
     if (isDisconnected) {
-      toast({
-        title: "Connection Status",
-        description: "You are disconnected",
-      });
       localStorage.removeItem("accessToken");
     }
   }, [isDisconnected]);

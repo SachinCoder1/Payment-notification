@@ -45,8 +45,6 @@ export function TransactionTable({ activeTab }: { activeTab: string }) {
               (acc: number, curr: any) => acc + curr.value,
               0
             );
-            console.log("Total Received", totalReceived);
-            console.log("Total Sent", totalSent);
 
             setTotalReceived(totalReceived);
             setTotalSent(totalSent);
@@ -66,8 +64,12 @@ export function TransactionTable({ activeTab }: { activeTab: string }) {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const displayedInvoices =
-    activeTab === "sent" ? transactions.sent : transactions.received;
+  const formatTheTransactions = (transactions: any) => {
+    const temp =
+      activeTab === "sent" ? transactions.sent : transactions.received;
+    return [...temp].reverse();
+  };
+  const displayedInvoices = formatTheTransactions(transactions);
 
   return (
     <Table>
@@ -76,8 +78,9 @@ export function TransactionTable({ activeTab }: { activeTab: string }) {
         <TableRow>
           <TableHead className="w-[100px]">BlockNum</TableHead>
           <TableHead>Asset</TableHead>
-          <TableHead>Category</TableHead>
+
           <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="w-[100px]"> Link</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -85,8 +88,17 @@ export function TransactionTable({ activeTab }: { activeTab: string }) {
           <TableRow key={index}>
             <TableCell className="font-medium">{invoice.blockNum}</TableCell>
             <TableCell>{invoice.asset}</TableCell>
-            <TableCell>{invoice.category}</TableCell>
+            {/* <TableCell>{invoice.category}</TableCell> */}
             <TableCell className="text-right">{invoice.value}</TableCell>
+            <TableCell>
+              <a
+                href={`https://sepolia.etherscan.io/tx/${invoice.hash}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View
+              </a>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
