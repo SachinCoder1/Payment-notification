@@ -13,8 +13,10 @@ export const authenticateUser = async (req: Request, res: Response) => {
   try {
     const { address, chain } = req.body;
 
+    const lowerCaseAddress = address.toLowerCase();
+
     const isMerchantExist: any = await Merchant.findOne({
-      address: address,
+      address: lowerCaseAddress,
     });
 
     if (isMerchantExist) {
@@ -28,12 +30,12 @@ export const authenticateUser = async (req: Request, res: Response) => {
       return isMerchantExist;
     }
 
-    const accessToken = generateAccessToken(address);
+    const accessToken = generateAccessToken(lowerCaseAddress);
 
     console.log("accessToken", accessToken);
 
     await Merchant.create({
-      address,
+      address: lowerCaseAddress,
       chain,
       accessToken,
     });
@@ -92,11 +94,17 @@ export const alchemyWebhooks = async (req: any, res: Response) => {
 
     console.log("toAddress", toAddress);
 
-    const existingMerchant = await Merchant.findOne({ address: toAddress });
+    const lowerCaseToAddress = toAddress.toLowerCase();
+
+    const existingMerchant = await Merchant.findOne({
+      address: lowerCaseToAddress,
+    });
 
     console.log("existingMerchant", existingMerchant);
 
     if (!existingMerchant) {
+      console.log("merchant not found");
+
       return res.status(200).json({
         status: "error",
         message: "Merchant not found",
@@ -126,6 +134,8 @@ export const alchemyWebhooks = async (req: any, res: Response) => {
       message: "connected",
     });
   } catch (error) {
+    console.log("error", error);
+
     return res.status(500).json({ message: "INTERNAL_ERROR" });
   }
 };
@@ -159,15 +169,15 @@ export const test = async (req: any, res: any) => {
 export const getUserTransactionController = async (req: any, res: any) => {
   try {
     const address = req.body.address;
-
+    const lowerCaseAddress = address.toLowerCase();
     if (address) {
       console.log("address", address);
     } else {
       return res.status(400).json({ message: "Address is required" });
     }
 
-    const received: any = await getUserReceiveTransaction(address);
-    const sent: any = await getUserSentTransaction(address);
+    const received: any = await getUserReceiveTransaction(lowerCaseAddress);
+    const sent: any = await getUserSentTransaction(lowerCaseAddress);
     return res.status(201).json({
       status: "success",
       data: { received, sent },
@@ -185,8 +195,9 @@ export const merchantOnboard = async (req: Request, res: Response) => {
   try {
     const { address } = req.body;
 
+    const lowerCaseAddress = address.toLowerCase();
     let merchant = await Merchant.findOne({
-      address: address,
+      address: lowerCaseAddress,
     });
 
     if (!merchant) {
@@ -196,11 +207,13 @@ export const merchantOnboard = async (req: Request, res: Response) => {
       });
     }
 
-    const isOnboarded: boolean = await addWalletAddressToAlchemy(address);
+    const isOnboarded: boolean = await addWalletAddressToAlchemy(
+      lowerCaseAddress
+    );
 
     if (isOnboarded) {
       await Merchant.findOneAndUpdate(
-        { address },
+        { address: lowerCaseAddress },
         {
           isOnboarded: true,
         }
@@ -226,10 +239,12 @@ export const addWalletAddressToAlchemy = async (address: string) => {
   try {
     console.log("address", address);
 
+    const lowerCaseAddress = address.toLowerCase();
+
     const res = await axios.patch(
       "https://dashboard.alchemy.com/api/update-webhook-addresses",
       {
-        addresses_to_add: [address],
+        addresses_to_add: [lowerCaseAddress],
         addresses_to_remove: [],
         webhook_id: ALCHEMY_WEBHOOK_ID,
       },
