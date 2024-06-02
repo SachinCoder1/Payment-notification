@@ -19,6 +19,8 @@ import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/ui/Navbar";
 import { LightDarkToggle } from "@/components/ui/light-dark-toggle";
+import LottieControl from "@/components/lottie/lottie";
+import { AnimationProvider } from "@/context/AnimationContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -46,17 +48,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(poppins.className, "dark")}>
-        <WagmiProvider config={config}>
-          <QueryClientProvider client={client}>
-            <RainbowKitProvider>
-              <div className="flex flex-col gap-4 min-h-screen items-center justify-center p-24">
-                {children}
-                <Navbar />
-                <LightDarkToggle className="fixed top-[calc(50%-12px)] right-5 " />
-              </div>
-            </RainbowKitProvider>
-          </QueryClientProvider>
-        </WagmiProvider>
+        <AnimationProvider>
+          <WagmiProvider config={config}>
+            <QueryClientProvider client={client}>
+              <RainbowKitProvider>
+                <div className="relative flex items-center justify-center min-h-screen w-full">
+                  <LottieControl />
+                  <div className="z-10 p-2 w-full">
+                    {children}
+                    <LightDarkToggle className="fixed top-1/2 right-5 transform -translate-y-1/2" />
+                  </div>
+                </div>
+              </RainbowKitProvider>
+            </QueryClientProvider>
+          </WagmiProvider>
+        </AnimationProvider>
         <Toaster />
       </body>
     </html>

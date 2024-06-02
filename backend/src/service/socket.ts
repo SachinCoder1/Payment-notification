@@ -14,20 +14,18 @@ export const initializeSocket = (httpServer: HttpServer) => {
   });
   io.on("connection", async (socket: any) => {
     console.log("New user connected");
-    // const { accessToken } = socket.handshake.query;
+    const { accessToken } = socket.handshake.query;
 
     let merchantId: any;
-    // if (accessToken) {
-      // const verifiedMerchant: any = await verifyAccesstoken(accessToken);
-
-      // if (verifiedMerchant) {
-        // merchantId = verifiedMerchant._id;
-        // const socketId = socket.id;
-        // if (merchantId) {
-        //   updateMerchantSocketId(merchantId, socket.id);
-        // }
-    //   }
-    // }
+    if (accessToken) {
+      const verifiedMerchant: any = await verifyAccesstoken(accessToken);
+      if (verifiedMerchant) {
+        merchantId = verifiedMerchant._id;
+        if (merchantId) {
+          updateMerchantSocketId(merchantId, socket.id);
+        }
+      }
+    }
 
     socket.on("disconnect", async () => {
       console.log("disconnecting");

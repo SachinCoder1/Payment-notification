@@ -7,6 +7,7 @@ import Merchant from "~/model/merchant";
 import Webhook from "~/model/webhook";
 import axios from "axios";
 import { ALCHEMY_WEBHOOK_ID, X_ALCHEMY_TOKEN } from "~/constants";
+import { getUserReceiveTransaction, getUserSentTransaction } from "~/service";
 
 export const authenticateUser = async (req: Request, res: Response) => {
   try {
@@ -66,16 +67,55 @@ export const verifyAccesstoken = async (accessToken: any) => {
 // 2. find the "to" wallet address in our merchant records
 // 3. if it is there then emit the socket event to frontend that received this payment
 
+// io.emit("without-socket-id", {
+//   noSocket: true,
+//   myBody: req.body,
+// });
+
 export const alchemyWebhooks = async (req: any, res: Response) => {
   try {
-    const io = req.socketio;
-    const newWebhook = new Webhook({ completeData: req.body });
+    console.log("webhook hit");
 
+    console.log("req.body", req.body);
+
+    const io = req.socketio;
+
+    console.log("io", io);
+
+    const newWebhook = new Webhook({ completeData: req.body });
     await newWebhook.save();
 
     console.log("socket emitting...");
-    io.emit("without-socket-id", {
-      noSocket: true,
+
+    const { toAddress } = req.body.event.activity[0];
+
+    console.log("toAddress", toAddress);
+
+    const existingMerchant = await Merchant.findOne({ address: toAddress });
+
+    console.log("existingMerchant", existingMerchant);
+
+    if (!existingMerchant) {
+      return res.status(200).json({
+        status: "error",
+        message: "Merchant not found",
+      });
+    }
+
+    const socketId = existingMerchant.socketId;
+
+    console.log("socketId", socketId);
+
+    if (!socketId) {
+      console.log("socket not found");
+
+      return res.status(200).json({
+        status: "error",
+        message: "user is not connected to socket",
+      });
+    }
+
+    io.to(socketId).emit("user-specific-notification", {
       myBody: req.body,
     });
 
@@ -113,6 +153,30 @@ export const test = async (req: any, res: any) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "INTERNAL_ERROR" });
+  }
+};
+export const getUserTransactionController = async (req: any, res: any) => {
+  try {
+    const address = req.body.address;
+
+    if (address) {
+      console.log("address", address);
+    } else {
+      return res.status(400).json({ message: "Address is required" });
+    }
+
+    const received: any = await getUserReceiveTransaction(address);
+    const sent: any = await getUserSentTransaction(address);
+    return res.status(201).json({
+      status: "success",
+      data: { received, sent },
+    });
+  } catch (error) {
+    console.log("error", error);
+
+    return res
+      .status(500)
+      .json({ message: "getUserReceiveTransactionController error" });
   }
 };
 

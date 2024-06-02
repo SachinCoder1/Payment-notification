@@ -36,6 +36,20 @@ export const testSocket = async () => {
     return { status: "fail", message: error.response.data };
   }
 };
+export const getUserTransaction = async (address: any) => {
+  try {
+    const response = await axios.post(
+      `${BACKEND_API_BASE_URL}/api/v1/auth/get-user-transaction`,
+      {
+        address: address,
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    return { status: "fail", message: error };
+  }
+};
 export const onboardMerchant = async (address: any) => {
   // Send a signup request
   console.log("calling api");
