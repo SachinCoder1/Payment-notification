@@ -32,7 +32,8 @@ const metadata: Metadata = {
 const config = getDefaultConfig({
   appName: "RainbowKit App",
   projectId: "YOUR_PROJECT_ID",
-  chains: [mainnet, polygon, optimism, arbitrum, base, sepolia],
+  // chains: [mainnet, polygon, optimism, arbitrum, base, sepolia],
+  chains: [sepolia],
   ssr: true,
 });
 const client = new QueryClient();
