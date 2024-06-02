@@ -17,10 +17,13 @@ export const initiateSocket = (toggleAnimation: (play: boolean) => void) => {
       });
 
       socket.on("connect", () => {
-        console.log("Connected to the server");
+        console.log("Connected to the server with socket ID:", socket?.id);
       });
 
+      console.log("after connect")
+
       socket.on("user-specific-notification", (data: any) => {
+        console.log("running user-specific-notification");
         console.log("data", data);
         const tx = data?.myBody?.event?.activity[0] || {};
 
