@@ -74,7 +74,14 @@ export const verifyAccesstoken = async (accessToken: any) => {
 
 export const alchemyWebhooks = async (req: any, res: Response) => {
   try {
+    console.log("webhook hit");
+
+    console.log("req.body", req.body);
+
     const io = req.socketio;
+
+    console.log("io", io);
+
     const newWebhook = new Webhook({ completeData: req.body });
     await newWebhook.save();
 
@@ -82,7 +89,11 @@ export const alchemyWebhooks = async (req: any, res: Response) => {
 
     const { toAddress } = req.body.event.activity[0];
 
+    console.log("toAddress", toAddress);
+
     const existingMerchant = await Merchant.findOne({ address: toAddress });
+
+    console.log("existingMerchant", existingMerchant);
 
     if (!existingMerchant) {
       return res.status(200).json({
@@ -96,6 +107,8 @@ export const alchemyWebhooks = async (req: any, res: Response) => {
     console.log("socketId", socketId);
 
     if (!socketId) {
+      console.log("socket not found");
+
       return res.status(200).json({
         status: "error",
         message: "user is not connected to socket",
