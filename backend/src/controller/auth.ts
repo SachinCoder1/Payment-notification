@@ -18,8 +18,6 @@ export const authenticateUser = async (req: Request, res: Response) => {
     });
 
     if (isMerchantExist) {
-      console.log("Merchant Exist");
-
       res.status(200).send({
         Status: "OK",
         accessToken: isMerchantExist.accessToken,
@@ -32,11 +30,16 @@ export const authenticateUser = async (req: Request, res: Response) => {
 
     const accessToken = generateAccessToken(address);
 
+    console.log("accessToken", accessToken);
+
     await Merchant.create({
       address,
       chain,
       accessToken,
     });
+
+    console.log("Merchant created");
+
     res.status(200).send({
       Status: "OK",
       accessToken,
@@ -79,8 +82,6 @@ export const alchemyWebhooks = async (req: any, res: Response) => {
     console.log("req.body", req.body);
 
     const io = req.socketio;
-
-    console.log("io", io);
 
     const newWebhook = new Webhook({ completeData: req.body });
     await newWebhook.save();
